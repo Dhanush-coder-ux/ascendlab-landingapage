@@ -1,0 +1,9 @@
+# Ascend Lab Robots Configuration
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /private
+
+# Sitemap location
+Sitemap: https://ascendlab.in/sitemap.xml
+

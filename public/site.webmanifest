@@ -1,0 +1,22 @@
+{
+  "name": "Ascend Lab - Digital Marketing & Creative Agency",
+  "short_name": "Ascend Lab",
+  "description": "Ascend Lab helps businesses grow through video production, social media management, digital advertising, SEO, content writing, graphic design, and web development.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FFFFFF",
+  "theme_color": "#2457A7",
+  "icons": [
+    {
+      "src": "/favicon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ]
+}
+
