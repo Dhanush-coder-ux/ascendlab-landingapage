@@ -1,19 +1,33 @@
-import Reveal from "./Reveal";
+import SectionHeading from "./common/SectionHeading";
 
 interface HeadingProps {
   title: string;
   text?: string;
   id?: string;
+  badge?: string;
+  highlightWord?: string;
+  align?: "center" | "left";
+  className?: string;
 }
 
-export default function Heading({ title, text, id }: HeadingProps) {
+export default function Heading({
+  title,
+  text,
+  id,
+  badge,
+  highlightWord,
+  align = "center",
+  className = "",
+}: HeadingProps) {
   return (
-    <Reveal className="mx-auto mb-12 max-w-2xl text-center">
-      <h2 id={id} className="text-3xl font-bold tracking-tight sm:text-4xl">
-        {title}
-      </h2>
-      {text && <p className="mt-4 text-mute">{text}</p>}
-    </Reveal>
+    <SectionHeading
+      id={id}
+      title={title}
+      text={text}
+      badge={badge}
+      highlightWord={highlightWord}
+      align={align}
+      className={className}
+    />
   );
 }
-

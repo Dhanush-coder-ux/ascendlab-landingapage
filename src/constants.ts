@@ -31,7 +31,7 @@ export const CATEGORIES = [
 ] as const;
 
 export const BTN_PRIMARY =
-  "inline-flex items-center justify-center rounded-md bg-brand px-6 py-3 text-sm font-semibold text-white shadow-xs transition duration-200 hover:bg-[#1d4a90] active:scale-[0.99] focus-visible:outline-2 focus-visible:outline-brand focus-visible:outline-offset-2";
+  "inline-flex items-center justify-center rounded-lg bg-blue-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-500/20 transition-all duration-200 hover:bg-blue-500 hover:shadow-blue-500/35 active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-blue-400 focus-visible:outline-offset-2";
 
 export const BTN_SECONDARY =
-  "inline-flex items-center justify-center rounded-md border border-line bg-white px-6 py-3 text-sm font-semibold text-ink shadow-xs transition duration-200 hover:border-brand hover:text-brand hover:bg-pale active:scale-[0.99] focus-visible:outline-2 focus-visible:outline-brand focus-visible:outline-offset-2";
+  "inline-flex items-center justify-center rounded-lg border border-slate-700/60 bg-slate-900/60 backdrop-blur-xs px-6 py-3 text-sm font-semibold text-slate-200 shadow-sm transition-all duration-200 hover:border-blue-500/50 hover:bg-slate-800/80 hover:text-white active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-blue-400 focus-visible:outline-offset-2";

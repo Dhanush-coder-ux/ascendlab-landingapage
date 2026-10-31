@@ -1,19 +1,55 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Menu, X } from "lucide-react";
 import Logo from "./Logo";
 import { NAV_LINKS, BTN_PRIMARY } from "../constants";
+import { gsap } from "../animations/gsapConfig";
+import { isReducedMotion } from "../animations/animationPresets";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState<string>("home");
 
+  const headerRef = useRef<HTMLElement>(null);
+  const linksRef = useRef<HTMLUListElement>(null);
+  const ctaRef = useRef<HTMLDivElement>(null);
+  const mobileMenuRef = useRef<HTMLDivElement>(null);
+
+  // GSAP Initial Page Load Entrance
+  useEffect(() => {
+    if (isReducedMotion()) return;
+
+    const ctx = gsap.context(() => {
+      const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
+
+      tl.fromTo(
+        headerRef.current,
+        { y: -100, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.9 }
+      )
+        .fromTo(
+          linksRef.current?.children ? Array.from(linksRef.current.children) : [],
+          { opacity: 0, y: -12 },
+          { opacity: 1, y: 0, duration: 0.5, stagger: 0.07, ease: "power2.out" },
+          "-=0.4"
+        )
+        .fromTo(
+          ctaRef.current,
+          { opacity: 0, scale: 0.95 },
+          { opacity: 1, scale: 1, duration: 0.5, ease: "back.out(1.5)" },
+          "-=0.3"
+        );
+    });
+
+    return () => ctx.revert();
+  }, []);
+
+  // Track active section and scroll state
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 16);
+      setScrolled(window.scrollY > 20);
 
-      // Determine active section based on scroll position
-      const scrollPos = window.scrollY + 120;
+      const scrollPos = window.scrollY + 140;
       for (let i = NAV_LINKS.length - 1; i >= 0; i--) {
         const section = document.getElementById(NAV_LINKS[i].id);
         if (section) {
@@ -31,6 +67,25 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Animate mobile menu when opened / closed
+  useEffect(() => {
+    if (!mobileMenuRef.current) return;
+
+    if (open) {
+      gsap.fromTo(
+        mobileMenuRef.current,
+        { opacity: 0, y: -16 },
+        { opacity: 1, y: 0, duration: 0.35, ease: "power3.out" }
+      );
+      const items = mobileMenuRef.current.querySelectorAll(".mobile-nav-item");
+      gsap.fromTo(
+        items,
+        { opacity: 0, x: -10 },
+        { opacity: 1, x: 0, duration: 0.25, stagger: 0.05, ease: "power2.out" }
+      );
+    }
+  }, [open]);
+
   // Close mobile menu on Escape
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -44,35 +99,46 @@ export default function Navbar() {
 
   return (
     <header
-      className={`sticky top-0 z-40 w-full transition-all duration-200 ${
+      ref={headerRef}
+      className={`fixed top-0 inset-x-0 z-50 w-full transition-all duration-300 ${
         scrolled || open
-          ? "border-b border-line bg-white/95 backdrop-blur shadow-xs"
-          : "border-b border-transparent bg-white/80 backdrop-blur-sm"
+          ? "border-b border-[rgba(148,163,184,0.12)] bg-[#080B12]/85 backdrop-blur-md shadow-[0_4px_24px_rgba(0,0,0,0.6)]"
+          : "border-b border-transparent bg-transparent"
       }`}
     >
-      <div className="mx-auto flex h-16 sm:h-20 max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        <Logo />
+      <div className="mx-auto flex h-18 sm:h-20 max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8">
+        
+        {/* Left: Brand Logo */}
+        <div className="flex-shrink-0">
+          <Logo />
+        </div>
 
-        {/* Desktop Navigation Links */}
-        <nav aria-label="Main Navigation" className="hidden lg:flex items-center gap-8">
-          <ul className="flex items-center gap-7">
+        {/* Center: Desktop Navigation Links */}
+        <nav aria-label="Main Navigation" className="hidden lg:flex items-center">
+          <ul ref={linksRef} className="flex items-center gap-8">
             {NAV_LINKS.map((link) => {
               const isActive = activeSection === link.id;
               return (
-                <li key={link.id}>
+                <li key={link.id} className="relative">
                   <a
                     href={link.href}
-                    className={`relative text-sm font-medium transition duration-150 py-1 ${
-                      isActive
-                        ? "text-brand font-semibold"
-                        : "text-mute hover:text-ink"
+                    className={`group relative text-sm font-medium transition-colors duration-200 py-1.5 px-1 ${
+                      isActive ? "text-[#F8FAFC] font-semibold" : "text-[#94A3B8] hover:text-[#F8FAFC]"
                     }`}
                   >
                     {link.label}
-                    {isActive && (
+
+                    {/* Active Underline Pill with Glow */}
+                    {isActive ? (
                       <span
                         aria-hidden="true"
-                        className="absolute bottom-0 left-0 right-0 h-0.5 bg-brand rounded-full"
+                        className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-blue-500 to-blue-400 rounded-full shadow-[0_0_8px_rgba(59,130,246,0.7)]"
+                      />
+                    ) : (
+                      /* Hover Animated Underline */
+                      <span
+                        aria-hidden="true"
+                        className="absolute bottom-0 left-0 right-0 h-[2px] bg-blue-500/50 scale-x-0 rounded-full transition-transform duration-200 origin-left group-hover:scale-x-100"
                       />
                     )}
                   </a>
@@ -82,8 +148,8 @@ export default function Navbar() {
           </ul>
         </nav>
 
-        {/* Desktop CTA */}
-        <div className="hidden lg:flex items-center gap-4">
+        {/* Right: Desktop CTA Button */}
+        <div ref={ctaRef} className="hidden lg:flex items-center gap-4">
           <a
             href="#contact"
             className={`${BTN_PRIMARY} text-sm py-2.5 px-5`}
@@ -92,10 +158,10 @@ export default function Navbar() {
           </a>
         </div>
 
-        {/* Mobile Hamburger Toggle */}
+        {/* Mobile Hamburger Toggle Button */}
         <button
           type="button"
-          className="rounded-md p-2 text-ink hover:bg-soft focus-visible:outline-2 focus-visible:outline-brand focus-visible:outline-offset-2 lg:hidden"
+          className="rounded-lg p-2 text-[#94A3B8] hover:text-[#F8FAFC] hover:bg-[#111827] border border-[rgba(148,163,184,0.15)] focus-visible:outline-2 focus-visible:outline-blue-500 lg:hidden"
           aria-label={open ? "Close menu" : "Open menu"}
           aria-expanded={open}
           aria-controls="mobile-navigation"
@@ -105,24 +171,25 @@ export default function Navbar() {
         </button>
       </div>
 
-      {/* Mobile Dropdown Menu */}
+      {/* Mobile Animated Dropdown Menu */}
       {open && (
         <div
+          ref={mobileMenuRef}
           id="mobile-navigation"
-          className="border-b border-line bg-white px-4 pb-6 pt-2 shadow-md lg:hidden"
+          className="border-b border-[rgba(148,163,184,0.15)] bg-[#080B12]/95 backdrop-blur-xl px-5 pb-6 pt-3 shadow-2xl lg:hidden"
         >
           <ul className="space-y-1">
             {NAV_LINKS.map((link) => {
               const isActive = activeSection === link.id;
               return (
-                <li key={link.id}>
+                <li key={link.id} className="mobile-nav-item">
                   <a
                     href={link.href}
                     onClick={() => setOpen(false)}
-                    className={`block rounded-md px-3 py-2.5 text-base font-medium transition ${
+                    className={`block rounded-lg px-3.5 py-2.5 text-base font-medium transition-all ${
                       isActive
-                        ? "bg-soft text-brand font-semibold"
-                        : "text-ink hover:bg-pale hover:text-brand"
+                        ? "bg-blue-600/15 border border-blue-500/30 text-blue-400 font-semibold"
+                        : "text-[#94A3B8] hover:bg-[#111827] hover:text-[#F8FAFC]"
                     }`}
                   >
                     {link.label}
@@ -132,11 +199,11 @@ export default function Navbar() {
             })}
           </ul>
 
-          <div className="mt-4 pt-4 border-t border-line">
+          <div className="mt-5 pt-4 border-t border-[rgba(148,163,184,0.12)]">
             <a
               href="#contact"
               onClick={() => setOpen(false)}
-              className={`${BTN_PRIMARY} w-full text-center`}
+              className={`${BTN_PRIMARY} w-full text-center py-3`}
             >
               Let's Talk
             </a>

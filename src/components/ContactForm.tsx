@@ -16,7 +16,7 @@ const initialPayload: EnquiryPayload = {
 };
 
 const inputClass =
-  "w-full rounded-lg border border-line bg-white px-3.5 py-2.5 text-sm text-ink transition placeholder:text-mute/60 focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20";
+  "w-full rounded-xl border border-[rgba(148,163,184,0.18)] bg-[#0D1220] px-4 py-3 text-sm text-[#F8FAFC] transition-all placeholder:text-[#94A3B8]/50 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/25";
 
 interface FieldProps {
   id: string;
@@ -29,13 +29,13 @@ interface FieldProps {
 function FormField({ id, label, req, children, err }: FieldProps) {
   return (
     <div>
-      <label htmlFor={id} className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-ink">
+      <label htmlFor={id} className="mb-2 block text-xs font-semibold uppercase tracking-wider text-[#94A3B8]">
         {label}
-        {req && <span className="text-red-500 ml-0.5">*</span>}
+        {req && <span className="text-blue-400 ml-1">*</span>}
       </label>
       {children}
       {err && (
-        <p id={`${id}-error`} role="alert" className="mt-1.5 text-xs font-medium text-red-600">
+        <p id={`${id}-error`} role="alert" className="mt-1.5 text-xs font-medium text-red-400">
           {err}
         </p>
       )}
@@ -99,12 +99,12 @@ export default function ContactForm({ service }: { service: string }) {
   }
 
   return (
-    <form onSubmit={handleSubmit} noValidate className="grid gap-4 sm:grid-cols-2">
+    <form onSubmit={handleSubmit} noValidate className="grid gap-5 sm:grid-cols-2">
       <FormField id="contact-name" label="Full Name" req err={errors.name}>
         <input
           id="contact-name"
           type="text"
-          className={`${inputClass} ${errors.name ? "border-red-400 focus:border-red-500 focus:ring-red-200" : ""}`}
+          className={`${inputClass} ${errors.name ? "border-red-400 focus:border-red-500 focus:ring-red-400/20" : ""}`}
           placeholder="e.g. Sarah Jenkins"
           value={form.name}
           onChange={handleChange("name")}
@@ -118,7 +118,7 @@ export default function ContactForm({ service }: { service: string }) {
         <input
           id="contact-email"
           type="email"
-          className={`${inputClass} ${errors.email ? "border-red-400 focus:border-red-500 focus:ring-red-200" : ""}`}
+          className={`${inputClass} ${errors.email ? "border-red-400 focus:border-red-500 focus:ring-red-400/20" : ""}`}
           placeholder="name@company.com"
           value={form.email}
           onChange={handleChange("email")}
@@ -159,9 +159,9 @@ export default function ContactForm({ service }: { service: string }) {
           value={form.service}
           onChange={handleChange("service")}
         >
-          <option value="">Select a service (optional)</option>
+          <option value="" className="bg-[#111827] text-[#94A3B8]">Select a service (optional)</option>
           {services.map((s) => (
-            <option key={s.id} value={s.title}>
+            <option key={s.id} value={s.title} className="bg-[#111827] text-[#F8FAFC]">
               {s.title}
             </option>
           ))}
@@ -175,11 +175,11 @@ export default function ContactForm({ service }: { service: string }) {
           value={form.budget}
           onChange={handleChange("budget")}
         >
-          <option value="">Select budget range (optional)</option>
-          <option value="Under ₹25,000">Under ₹25,000</option>
-          <option value="₹25,000 - ₹50,000">₹25,000 - ₹50,000</option>
-          <option value="₹50,000 - ₹1,00,000">₹50,000 - ₹1,00,000</option>
-          <option value="₹1,00,000+">₹1,00,000+</option>
+          <option value="" className="bg-[#111827] text-[#94A3B8]">Select budget range (optional)</option>
+          <option value="Under ₹25,000" className="bg-[#111827] text-[#F8FAFC]">Under ₹25,000</option>
+          <option value="₹25,000 - ₹50,000" className="bg-[#111827] text-[#F8FAFC]">₹25,000 - ₹50,000</option>
+          <option value="₹50,000 - ₹1,00,000" className="bg-[#111827] text-[#F8FAFC]">₹50,000 - ₹1,00,000</option>
+          <option value="₹1,00,000+" className="bg-[#111827] text-[#F8FAFC]">₹1,00,000+</option>
         </select>
       </FormField>
 
@@ -188,7 +188,7 @@ export default function ContactForm({ service }: { service: string }) {
           <textarea
             id="contact-message"
             rows={4}
-            className={`${inputClass} ${errors.message ? "border-red-400 focus:border-red-500 focus:ring-red-200" : ""}`}
+            className={`${inputClass} ${errors.message ? "border-red-400 focus:border-red-500 focus:ring-red-400/20" : ""}`}
             placeholder="Tell us a little about your brand, what you need help with, and your target timeline..."
             value={form.message}
             onChange={handleChange("message")}
@@ -202,11 +202,11 @@ export default function ContactForm({ service }: { service: string }) {
         <button
           type="submit"
           disabled={status === "sending"}
-          className={`${BTN_PRIMARY} w-full sm:w-auto inline-flex items-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed`}
+          className={`${BTN_PRIMARY} w-full sm:w-auto inline-flex items-center gap-2.5 disabled:opacity-60 disabled:cursor-not-allowed`}
         >
           {status === "sending" ? (
             <>
-              <Loader2 size={16} className="animate-spin" aria-hidden="true" />
+              <Loader2 size={16} className="animate-spin text-white" aria-hidden="true" />
               Sending Enquiry...
             </>
           ) : (
@@ -214,14 +214,14 @@ export default function ContactForm({ service }: { service: string }) {
           )}
         </button>
 
-        {/* Live Feedback Messages */}
-        <div aria-live="polite" className="mt-4">
+        {/* Feedback Alerts */}
+        <div aria-live="polite" className="mt-5">
           {status === "success" && (
-            <div className="flex items-start gap-3 rounded-lg border border-green-200 bg-green-50 p-4 text-sm text-green-800">
-              <CheckCircle2 size={18} className="mt-0.5 shrink-0 text-green-600" aria-hidden="true" />
+            <div className="flex items-start gap-3 rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-4 text-sm text-emerald-300">
+              <CheckCircle2 size={18} className="mt-0.5 shrink-0 text-emerald-400" aria-hidden="true" />
               <div>
-                <p className="font-semibold">Thank you for reaching out.</p>
-                <p className="mt-0.5 text-xs text-green-700">
+                <p className="font-semibold text-emerald-200">Thank you for reaching out.</p>
+                <p className="mt-0.5 text-xs text-emerald-300/80">
                   Your enquiry has been received. Our team will review your project details and get in touch shortly.
                 </p>
               </div>
@@ -229,15 +229,15 @@ export default function ContactForm({ service }: { service: string }) {
           )}
 
           {status === "error" && (
-            <div className="flex items-start gap-3 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-800">
-              <AlertCircle size={18} className="mt-0.5 shrink-0 text-red-600" aria-hidden="true" />
+            <div className="flex items-start gap-3 rounded-xl border border-red-500/30 bg-red-500/10 p-4 text-sm text-red-300">
+              <AlertCircle size={18} className="mt-0.5 shrink-0 text-red-400" aria-hidden="true" />
               <div>
-                <p className="font-semibold">Unable to send message via form.</p>
-                <p className="mt-0.5 text-xs text-red-700">
+                <p className="font-semibold text-red-200">Unable to send message via form.</p>
+                <p className="mt-0.5 text-xs text-red-300/80">
                   {errorMessage || (
                     <>
                       Please try again or email us directly at{" "}
-                      <a href={`mailto:${EMAIL}`} className="underline font-semibold">
+                      <a href={`mailto:${EMAIL}`} className="underline font-semibold text-blue-400">
                         {EMAIL}
                       </a>.
                     </>

@@ -4,8 +4,8 @@
   "description": "Ascend Lab helps businesses grow through video production, social media management, digital advertising, SEO, content writing, graphic design, and web development.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#FFFFFF",
-  "theme_color": "#2457A7",
+  "background_color": "#080B12",
+  "theme_color": "#080B12",
   "icons": [
     {
       "src": "/favicon-192x192.png",
@@ -19,4 +19,3 @@
     }
   ]
 }
-

@@ -1,6 +1,8 @@
+import { useRef, useEffect } from "react";
 import { CheckCircle2 } from "lucide-react";
 import Heading from "./Heading";
-import Reveal from "./Reveal";
+import { gsap } from "../animations/gsapConfig";
+import { isReducedMotion, EASING } from "../animations/animationPresets";
 
 const REASONS = [
   {
@@ -26,36 +28,77 @@ const REASONS = [
 ] as const;
 
 export default function Why() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const listRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (isReducedMotion() || !listRef.current) return;
+
+    const ctx = gsap.context(() => {
+      const items = listRef.current?.querySelectorAll(".why-feature-card");
+      if (items && items.length > 0) {
+        gsap.fromTo(
+          items,
+          { opacity: 0, y: 26 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.65,
+            stagger: 0.1,
+            ease: EASING.smooth,
+            scrollTrigger: {
+              trigger: listRef.current,
+              start: "top 80%",
+              once: true,
+            },
+          }
+        );
+      }
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
+
   return (
     <section
+      ref={sectionRef}
       id="why"
       aria-labelledby="why-heading"
-      className="bg-pale border-y border-line/60 py-20 lg:py-28"
+      className="relative overflow-hidden bg-[#0D1220] py-24 lg:py-32 border-b border-[rgba(148,163,184,0.1)]"
     >
-      <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+      {/* Background subtle radial lighting */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -top-32 right-10 h-[500px] w-[500px] rounded-full bg-blue-600/8 blur-[150px]"
+      />
+
+      <div className="relative mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
         <Heading
           id="why-heading"
+          badge="THE ASCEND ADVANTAGE"
           title="A Thoughtful Approach to Digital Growth"
+          highlightWord="Digital Growth"
           text="What makes working with Ascend Lab different — practical strategy, clean creative execution, and reliable delivery."
         />
 
-        <div className="mt-10 space-y-4">
+        <div ref={listRef} className="mt-12 space-y-4">
           {REASONS.map((reason) => (
-            <Reveal key={reason.title}>
-              <div className="flex items-start gap-4 rounded-xl border border-line bg-white p-5 sm:p-6 shadow-2xs transition duration-150 hover:border-brand/40">
-                <span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-soft text-brand">
-                  <CheckCircle2 size={18} aria-hidden="true" />
-                </span>
-                <div>
-                  <h3 className="text-base font-semibold text-ink sm:text-lg">
-                    {reason.title}
-                  </h3>
-                  <p className="mt-1 text-sm leading-relaxed text-mute">
-                    {reason.desc}
-                  </p>
-                </div>
+            <div
+              key={reason.title}
+              className="why-feature-card group flex items-start gap-4 rounded-xl border border-[rgba(148,163,184,0.15)] bg-[#111827] p-6 transition-all duration-300 hover:border-blue-500/40 hover:bg-[#151D2D] hover:shadow-[0_10px_25px_rgba(0,0,0,0.5),0_0_15px_rgba(59,130,246,0.1)]"
+            >
+              <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-blue-500/10 border border-blue-500/25 text-blue-400 shadow-[0_0_12px_rgba(59,130,246,0.15)] transition-transform duration-200 group-hover:scale-105">
+                <CheckCircle2 size={18} aria-hidden="true" />
+              </span>
+              <div>
+                <h3 className="text-base font-bold text-[#F8FAFC] sm:text-lg group-hover:text-blue-400 transition-colors">
+                  {reason.title}
+                </h3>
+                <p className="mt-1 text-sm leading-relaxed text-[#94A3B8]">
+                  {reason.desc}
+                </p>
               </div>
-            </Reveal>
+            </div>
           ))}
         </div>
       </div>
